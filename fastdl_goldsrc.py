@@ -22,7 +22,7 @@ UseGzipCompression = True
 # For Goldsrc, we should blacklist the full path to the file. Example: 'models/barney.mdl' instead of just 'barney.mdl'
 
 gameFolders = [
-	("maps", [".bsp", ".nav", ".txt", ".cfg", ".res"]),
+	("maps", [".bsp", ".nav", ".txt", ".cfg", ".res", ".gmr", ".gsr"]),
 	("gfx", [".tga", ".bmp"]),
 	("overviews", [".bmp", ".tga", ".txt"]),
 	("models", [".mdl", ".bmp"]),
