@@ -25,9 +25,8 @@ gameFolders = [
 	("maps", [".bsp", ".nav", ".txt", ".cfg", ".res", ".gmr", ".gsr"]),
 	("gfx", [".tga", ".bmp"]),
 	("overviews", [".bmp", ".tga", ".txt"]),
-	("models", [".mdl", ".bmp"]),
+	("models", [".mdl", ".bmp", ".txt"]),
 	("sprites", [".spr"]),
-	("scripts", [".as"]),
 	("sound", [".mp3", ".wav", ".ogg", ".txt"]),
 	("", [".wad"])
 ]
