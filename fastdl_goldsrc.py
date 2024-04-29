@@ -27,6 +27,7 @@ gameFolders = [
 	("overviews", [".bmp", ".tga", ".txt"]),
 	("models", [".mdl", ".bmp"]),
 	("sprites", [".spr"]),
+	("scripts", [".as"]),
 	("sound", [".mp3", ".wav", ".ogg", ".txt"]),
 	("", [".wad"])
 ]
