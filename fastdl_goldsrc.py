@@ -4,12 +4,15 @@ from shutil import copyfileobj, copyfile
 from sys import argv
 from time import time
 from argparse import ArgumentParser, RawTextHelpFormatter
+from configparser import ConfigParser
+from pathlib import Path
 
 gameRootFolder = "./cstrike"
 fastdlRootFolder = "./www/fastdl"
 blackListPath = "./fastdl_blacklist_goldsrc.txt"
+config = ConfigParser()
 # 1 for fast, 9 for best
-CompressionLevel = 6
+CompressionLevel = 9
 # Goldsrc doesn't download gzipped files directly. The chromium embedded framework used by steam is also used by the goldsrc engine to download files from fastdl.
 # CEF supports Content-Encoding: gzip, maybe we can even use Brotli
 # While you can configure your web server to gzip compress on the fly, this is a very bad idea and will burn your CPU.
@@ -38,6 +41,39 @@ TotalFilesRemoved = 0
 cmpReadSize = 128000
 ProcessArgs = None
 
+def createDefaultConfig():
+	cfg = ConfigParser()
+	cfg['settings.script'] = {
+		'gamerootfolder': '/home/csgoserver/serverfiles/csgo',
+		'fastdlrootfolder': '/home/csgoserver/www/fastdl',
+		'blacklistpath': './fastdl_blacklist_goldsrc.txt',
+		'compressionlevel': '9',
+		'usegzipcompression': 'yes',
+	}
+
+	P = Path(__file__).parent.resolve()
+	P = P.joinpath('fastdl.ini')
+
+	with open(P, 'w') as f_out:
+		cfg.write(f_out)
+
+def loadConfig():
+	global gameRootFolder, fastdlRootFolder, blackListPath, CompressionLevel, UseGzipCompression
+	P = Path(__file__).parent.resolve()
+	P = P.joinpath('fastdl.ini')
+
+	print(P)
+
+	if not P.exists():
+		createDefaultConfig()
+		quit()
+	else:
+		config.read(P)
+		gameRootFolder = config['settings.script']['gamerootfolder']
+		fastdlRootFolder = config['settings.script']['fastdlrootfolder']
+		blackListPath = config['settings.script']['blacklistpath']
+		CompressionLevel = config.getint('settings.script', 'compressionlevel', fallback=9)
+		UseGzipCompression = config.getboolean('settings.script', 'usegzipcompression', fallback=True)
 
 def printVerbose(level, *args, **kwargs):
 	if ProcessArgs.verbose_level >= level: 
@@ -184,4 +220,5 @@ if __name__ == "__main__":
 	
 	ProcessArgs = parser.parse_args()
 
+	loadConfig()
 	main()

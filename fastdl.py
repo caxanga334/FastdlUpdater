@@ -4,11 +4,14 @@ from shutil import copyfileobj, copyfile
 from sys import argv
 from time import time
 from argparse import ArgumentParser, RawTextHelpFormatter
+from configparser import ConfigParser
+from pathlib import Path
 
 
 gameRootFolder = "./csgo"
 fastdlRootFolder = "./www/fastdl"
 blackListPath = "./fastdl_blacklist.txt"
+config = ConfigParser()
 
 gameFolders = [
 	("maps", [".bsp", ".nav"]),
@@ -24,6 +27,36 @@ TotalFilesChanged = 0
 TotalFilesRemoved = 0
 cmpReadSize = 128000
 ProcessArgs = None
+
+def createDefaultConfig():
+	cfg = ConfigParser()
+	cfg['settings.script'] = {
+		'gamerootfolder': '/home/csgoserver/serverfiles/csgo',
+		'fastdlrootfolder': '/home/csgoserver/www/fastdl',
+		'blacklistpath': './fastdl_blacklist.txt'
+	}
+
+	P = Path(__file__).parent.resolve()
+	P = P.joinpath('fastdl.ini')
+
+	with open(P, 'w') as f_out:
+		cfg.write(f_out)
+
+def loadConfig():
+	global gameRootFolder, fastdlRootFolder, blackListPath
+	P = Path(__file__).parent.resolve()
+	P = P.joinpath('fastdl.ini')
+
+	print(P)
+
+	if not P.exists():
+		createDefaultConfig()
+		quit()
+	else:
+		config.read(P)
+		gameRootFolder = config['settings.script']['gamerootfolder']
+		fastdlRootFolder = config['settings.script']['fastdlrootfolder']
+		blackListPath = config['settings.script']['blacklistpath']
 
 
 def printVerbose(level, *args, **kwargs):
@@ -170,4 +203,5 @@ if __name__ == "__main__":
 	
 	ProcessArgs = parser.parse_args()
 
+	loadConfig()
 	main()
